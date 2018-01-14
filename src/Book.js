@@ -3,23 +3,56 @@ import PropTypes from 'prop-types'
 
 class Book extends Component {
   static propTypes = {
-    book: PropTypes.object.isRequired
+    book: PropTypes.object.isRequired,
+    onUpdateBook: PropTypes.func.isRequired
+  }
+
+  state = {
+    options: [
+      {
+        value: "none",
+        enabled: false,
+        title: "Move to..."
+      },
+      {
+        value: "currentlyReading",
+        enabled: true,
+        title: "Currently Reading"
+      },
+      {
+        value: "wantToRead",
+        enabled: true,
+        title: "Want to Read"
+      },
+      {
+        value: "read",
+        enabled: true,
+        title: "Read"
+      },
+      {
+        value: "none",
+        enabled: true,
+        title: "None"
+      }
+    ]
   }
 
   render() {
-    const {book} = this.props
+    const {book, onUpdateBook} = this.props
 
     return (
       <div className="book">
         <div className="book-top">
           <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-          <div className="book-shelf-changer">
+          <div className="book-shelf-changer" onChange={ (e) => onUpdateBook(book, e.target.value)}>
             <select>
-              <option value="none" disabled>Move to...</option>
-              <option value="currentlyReading">Currently Reading</option>
-              <option value="wantToRead">Want to Read</option>
-              <option value="read">Read</option>
-              <option value="none">None</option>
+              {
+                this.state.options.map( (o, idx) => (
+                  <option value={o.value}
+                          key={idx}
+                          disabled={!o.enabled}
+                          selected={o.value === book.shelf}>{o.title}</option>
+                ))}
             </select>
           </div>
         </div>
