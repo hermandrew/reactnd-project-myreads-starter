@@ -44,14 +44,14 @@ class Book extends Component {
       <div className="book">
         <div className="book-top">
           <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-          <div className="book-shelf-changer" onChange={ (e) => onUpdateBook(book, e.target.value)}>
-            <select>
+          <div className="book-shelf-changer">
+            <select value={book.shelf}
+                    onChange={ (e) => onUpdateBook(book, e.target.value)}>
               {
                 this.state.options.map( (o, idx) => (
                   <option value={o.value}
                           key={idx}
-                          disabled={!o.enabled}
-                          selected={o.value === book.shelf}>{o.title}</option>
+                          disabled={!o.enabled}>{o.title}</option>
                 ))}
             </select>
           </div>
