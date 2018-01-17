@@ -6,12 +6,13 @@ import Shelf from './Shelf'
 
 class SearchBooks extends Component {
   static propTypes = {
-    onUpdateBook: PropTypes.func.isRequired
+    onUpdateBook: PropTypes.func.isRequired,
+    currentBooks: PropTypes.array.isRequired
   }
 
   state = {
     query: '',
-    books: [],
+    books: []
   }
 
   updateQuery = (newQuery) => {
@@ -46,13 +47,24 @@ class SearchBooks extends Component {
     })
   }
 
-  componentDidMount() {
-    this.updateQuery('')
+  setBookShelves = () => {
+    for (let i=0; i<this.state.books.length; i++) {
+      this.state.books[i].shelf = "none"
+      for (let j=0; j<this.props.currentBooks.length; j++) {
+        if (this.props.currentBooks[j].id === this.state.books[i].id) {
+          this.state.books[i].shelf = this.props.currentBooks[j].shelf
+          break;
+        }
+      }
+    }
   }
 
   render() {
     const {onUpdateBook} = this.props
     const {query, books} = this.state
+    this.setBookShelves()
+    const onShelves = books.filter((book) => book.shelf !== "none")
+    const searchResults = books.filter((book) => book.shelf === "none")
 
     return (
       <div className="search-books">
@@ -69,10 +81,16 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          {console.log(books)}
+          {onShelves.length > 0 &&
+          <Shelf books={onShelves}
+                 title="On Your Shelves"
+                 onUpdateBook={onUpdateBook}/>
+          }
+          {searchResults.length > 0 &&
           <Shelf books={books}
                  title="Search Results"
                  onUpdateBook={onUpdateBook}/>
+          }
         </div>
       </div>
     )
